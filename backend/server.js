@@ -6,6 +6,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const User = require("./user.model.js");
+const Transaction = require("./transaction.model.js"); // <--- added
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // Config
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001; // default changed to 3001
 const MONGO_URI =
   process.env.MONGO_URI ||
   "mongodb+srv://nallujeevanireddy_db_user:2JzJbLAn4dxR4XcW@cluster0.x8kscbo.mongodb.net/moneymitra?retryWrites=true&w=majority";
@@ -100,6 +101,52 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//
+// --- Transaction endpoints ---
+//
+
+/**
+ * POST /log-transaction
+ * body: { userName, amount, category, description, date? }
+ */
+app.post("/log-transaction", async (req, res) => {
+  try {
+    const { userName, amount, category, description, date } = req.body || {};
+
+    if (!userName || typeof userName !== "string" || !amount || !category) {
+      return res.status(400).json({ error: "userName, amount and category are required." });
+    }
+
+    const tx = await Transaction.create({
+      userName: userName.trim(),
+      amount: Number(amount),
+      category: String(category),
+      description: description ? String(description) : undefined,
+      date: date ? new Date(date) : undefined
+    });
+
+    res.status(201).json({ message: "Transaction saved", tx });
+  } catch (err) {
+    console.error("Error in POST /log-transaction:", err);
+    res.status(500).json({ error: "Internal Server Error", details: err.message });
+  }
+});
+
+// GET /transactions - list all transactions (most recent first)
+app.get("/transactions", async (req, res) => {
+  try {
+    const transactions = await Transaction.find().sort({ createdAt: -1 }).lean();
+    res.json({ transactions });
+  } catch (err) {
+    console.error("Error in GET /transactions:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//
+// --- end transactions ---
+//
 
 // 404 handler
 app.use((req, res) => {
