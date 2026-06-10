@@ -25,16 +25,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/save-user", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json" 
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          phone: phone.trim()
-        })
-      });
+      const response = await fetch(
+        "https://moneymitra-backend.onrender.com/save-user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name.trim(),
+            phone: phone.trim()
+          })
+        }
+      );
 
       const data = await response.json();
 
@@ -63,7 +66,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">{t.language}</label>
+          <label className="text-sm font-medium text-gray-700">
+            {t.language}
+          </label>
+
           <div className="flex space-x-2">
             {(['english', 'hindi', 'telugu'] as Language[]).map((lang) => (
               <button
@@ -83,7 +89,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="phone" className="text-sm font-medium text-gray-700">{t.enterPhoneNumber}</label>
+            <label
+              htmlFor="phone"
+              className="text-sm font-medium text-gray-700"
+            >
+              {t.enterPhoneNumber}
+            </label>
+
             <input
               id="phone"
               type="tel"
@@ -94,8 +106,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               required
             />
           </div>
+
           <div>
-            <label htmlFor="name" className="text-sm font-medium text-gray-700">{t.enterYourName}</label>
+            <label
+              htmlFor="name"
+              className="text-sm font-medium text-gray-700"
+            >
+              {t.enterYourName}
+            </label>
+
             <input
               id="name"
               type="text"

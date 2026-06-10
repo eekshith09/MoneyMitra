@@ -17,10 +17,8 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // Config
-const PORT = process.env.PORT || 3001; // default changed to 3001
-const MONGO_URI =
-  process.env.MONGO_URI ||
-  "mongodb+srv://nallujeevanireddy_db_user:2JzJbLAn4dxR4XcW@cluster0.x8kscbo.mongodb.net/moneymitra?retryWrites=true&w=majority";
+const PORT = process.env.PORT || 3001;
+const MONGO_URI = process.env.MONGO_URI;
 
 // Connect to MongoDB
 mongoose
